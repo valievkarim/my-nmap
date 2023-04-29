@@ -108,6 +108,7 @@
 
 #include <algorithm>
 #include <list>
+#include <random>
 
 extern NmapOps o;
 
@@ -2783,6 +2784,21 @@ int service_scan(std::vector<Target *> &Targets) {
               (unsigned) SG->services_remaining.size(),
               (SG->services_remaining.size() == 1)? "service" : "services",
               targetstr);
+  }
+
+
+
+  std::vector<ServiceNFO *> temp(SG->services_remaining.begin(), SG->services_remaining.end());
+
+  std::random_device rd;
+  std::mt19937 g(rd());
+
+  std::shuffle(temp.begin(), temp.end(), g);
+
+  std::copy(temp.begin(), temp.end(), SG->services_remaining.begin());
+
+  if (o.verbose) {
+      log_write(LOG_STDOUT, "my-nmap shuffled %u services\n", (unsigned) SG->services_remaining.size());
   }
 
   // Lets create a nsock pool for managing all the concurrent probes
