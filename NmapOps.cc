@@ -249,6 +249,7 @@ void NmapOps::Initialize() {
   min_rtt_timeout = MIN_RTT_TIMEOUT;
   initial_rtt_timeout = INITIAL_RTT_TIMEOUT;
   max_retransmissions = MAX_RETRANSMISSIONS;
+  min_retransmissions = 1;
   min_host_group_sz = 1;
   max_host_group_sz = 100000; // don't want to be restrictive unless user sets
   max_tcp_scan_delay = MAX_TCP_SCAN_DELAY;
@@ -566,6 +567,12 @@ void NmapOps::setMaxRetransmissions(int max_retransmit)
     max_retransmissions = max_retransmit;
 }
 
+void NmapOps::setMinRetransmissions(int min_retransmit)
+{
+    if (min_retransmit < 1)
+        fatal("%s: must be >= 1", __func__);
+    min_retransmissions = min_retransmit;
+}
 
 void NmapOps::setMinHostGroupSz(unsigned int sz) {
   if (sz > max_host_group_sz)

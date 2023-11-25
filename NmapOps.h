@@ -199,6 +199,9 @@ class NmapOps {
   void setInitialRttTimeout(int rtt);
   void setMaxRetransmissions(int max_retransmit);
   unsigned int getMaxRetransmissions() { return max_retransmissions; }
+  void setMinRetransmissions(int min_retransmit);
+  unsigned int getMinRetransmissions() { return min_retransmissions; }
+
 
   /* Similar functions for Host group size */
   int minHostGroupSz() { return min_host_group_sz; }
@@ -364,6 +367,7 @@ class NmapOps {
   int min_rtt_timeout;
   int initial_rtt_timeout;
   unsigned int max_retransmissions;
+  unsigned int min_retransmissions;
   unsigned int max_tcp_scan_delay;
   unsigned int max_udp_scan_delay;
   unsigned int max_sctp_scan_delay;

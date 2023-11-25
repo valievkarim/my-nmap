@@ -511,7 +511,7 @@ struct ultra_scan_performance_vars : public scan_performance_vars {
      in this many usecs */
   int pingtime;
   unsigned int tryno_cap; /* The maximum trynumber (starts at zero) allowed */
-
+  unsigned int tryno_min_cap;
   void init();
 };
 

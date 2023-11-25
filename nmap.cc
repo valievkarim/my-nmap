@@ -453,6 +453,7 @@ public:
     this->pre_min_rtt_timeout   = -1;
     this->pre_max_rtt_timeout   = -1;
     this->pre_max_retries       = -1;
+    this->pre_min_retries       = -1;
     this->pre_host_timeout      = -1;
 #ifndef NOLUA
     this->pre_scripttimeout     = -1;
@@ -471,6 +472,7 @@ public:
   int   pre_max_parallelism, pre_scan_delay, pre_max_scan_delay;
   int   pre_init_rtt_timeout, pre_min_rtt_timeout, pre_max_rtt_timeout;
   int   pre_max_retries;
+  int   pre_min_retries;
   long  pre_host_timeout;
 #ifndef NOLUA
   double pre_scripttimeout;
@@ -547,6 +549,7 @@ void parse_options(int argc, char **argv) {
     {"scan-delay", required_argument, 0, 0},
     {"max-scan-delay", required_argument, 0, 0},
     {"max-retries", required_argument, 0, 0},
+    {"min-retries", required_argument, 0, 0},
     {"oA", required_argument, 0, 0},
     {"oN", required_argument, 0, 0},
     {"oM", required_argument, 0, 0},
@@ -794,6 +797,10 @@ void parse_options(int argc, char **argv) {
           delayed_options.pre_max_retries = atoi(optarg);
           if (delayed_options.pre_max_retries < 0)
             fatal("max-retries must be positive");
+        } else if (strcmp(long_options[option_index].name, "min-retries") == 0) {
+          delayed_options.pre_min_retries = atoi(optarg);
+          if (delayed_options.pre_min_retries < 1)
+            fatal("min-retries must be >= 1");
         } else if (strcmp(long_options[option_index].name, "randomize-hosts") == 0
                    || strcmp(long_options[option_index].name, "rH") == 0) {
           o.randomize_hosts = true;
@@ -1472,6 +1479,8 @@ void  apply_delayed_options() {
     o.setMaxRttTimeout(delayed_options.pre_max_rtt_timeout);
   if (delayed_options.pre_max_retries != -1)
     o.setMaxRetransmissions(delayed_options.pre_max_retries);
+  if (delayed_options.pre_min_retries != -1)
+    o.setMinRetransmissions(delayed_options.pre_min_retries);
   if (delayed_options.pre_host_timeout != -1)
     o.host_timeout = delayed_options.pre_host_timeout;
 #ifndef NOLUA
@@ -1992,6 +2001,7 @@ int nmap_main(int argc, char *argv[]) {
     log_write(LOG_PLAIN, "  max-scan-delay: TCP %d, UDP %d, SCTP %d\n", o.maxTCPScanDelay(), o.maxUDPScanDelay(), o.maxSCTPScanDelay());
     log_write(LOG_PLAIN, "  parallelism: min %d, max %d\n", o.min_parallelism, o.max_parallelism);
     log_write(LOG_PLAIN, "  max-retries: %d, host-timeout: %ld\n", o.getMaxRetransmissions(), o.host_timeout);
+    log_write(LOG_PLAIN, "  min-retries: %d\n", o.getMinRetransmissions());
     log_write(LOG_PLAIN, "  min-rate: %g, max-rate: %g\n", o.min_packet_send_rate, o.max_packet_send_rate);
     log_write(LOG_PLAIN, "---------------------------------------------\n");
   }

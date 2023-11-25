@@ -128,6 +128,7 @@ void ultra_scan_performance_vars::init() {
   ping_magnifier = 3;
   pingtime = 1250000;
   tryno_cap = o.getMaxRetransmissions();
+  tryno_min_cap = o.getMinRetransmissions();
 }
 
 const char *pspectype2ascii(int type) {
@@ -670,7 +671,7 @@ unsigned int HostScanStats::allowedTryno(bool *capped, bool *mayincrease) const 
   unsigned int maxval = 0;
 
   /* TODO: This should perhaps differ by scan type. */
-  maxval = MAX(1, max_successful_tryno + 1);
+  maxval = MAX(USI->perf.tryno_min_cap, max_successful_tryno + 1);
   if (maxval > USI->perf.tryno_cap) {
     if (capped)
       *capped = true;
